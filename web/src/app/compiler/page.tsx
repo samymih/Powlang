@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import powLangGrammar from "@/powlang-grammar";
 import powLangStyle from "@/powlang-style";
@@ -57,8 +57,17 @@ export default function Home() {
   const [enableLogs, setEnableLogs] = useState(false);
   const [isCompiling, setIsCompiling] = useState(false);
   const [spinnerFrame, setSpinnerFrame] = useState(0);
-  const spinnerFrames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
+  const [isFullScreen, setIsFullScreen] = useState(false);
+  const spinnerFrames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const preRef = useRef<HTMLPreElement>(null);
 
+  const syncScroll = () => {
+    if (textareaRef.current && preRef.current) {
+      preRef.current.scrollTop = textareaRef.current.scrollTop;
+      preRef.current.scrollLeft = textareaRef.current.scrollLeft;
+    }
+  };
   useEffect(() => {
     let interval: NodeJS.Timeout | undefined;
     if (isCompiling) {
@@ -160,22 +169,72 @@ ala newCats =e 0 -> {
       description: "Defines a ternary conditional expression.",
       usage: "condition ? expressionIfTrue : expressionIfFalse",
       value: `x > 5 ? 10 : 0`,
-    }
+    },
   };
-  
+
+  const toggleFullScreen = () => {
+    setIsFullScreen(!isFullScreen); 
+  };
+
   return (
     <div className="min-h-screen min-w-screen p-4 flex flex-col justify-center items-center bg-gray-900 text-gray-100">
       <main className="p-6 flex flex-col justify-center items-center w-full max-w-4xl">
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8">
-          <h1 className="text-4xl mb-4 text-pink-400 text-center">PowLang Compiler</h1>
-          <img src="/powlang.png" className="h-24 w-24" alt="PowLang Logo"></img>
+          <h1 className="text-4xl mb-4 text-pink-400 text-center">
+            PowLang Compiler
+          </h1>
+          <img
+            src="/powlang.png"
+            className="h-24 w-24"
+            alt="PowLang Logo"
+          ></img>
         </div>
-        <textarea
-          className="w-full h-48 my-5 p-2 font-mono text-lg sm:text-xl border border-gray-700 rounded bg-gray-800 text-gray-100 outline-none"
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          placeholder="Enter your PowLang code here..."
-        />
+        <div
+          style={
+            isFullScreen
+              ? {
+                  backgroundColor: "rgba(0, 0, 0, 0.7)",
+                  width: "100vw",
+                  height: "200vh",
+                  position: "fixed",
+                }
+              : {}
+          }
+        ></div>
+        <div
+          className={`relative w-full my-5 ${
+            isFullScreen ? "!fixed top-10 left-50 w-[90vw] h-[90vh] z-50" : ""
+          }`}
+        >
+          <pre
+            className="absolute top-0 left-0 w-full h-full p-4 font-mono text-lg sm:text-xl border border-gray-700 rounded bg-gray-800 text-gray-100 overflow-hidden whitespace-pre-wrap break-words pointer-events-none"
+            style={{
+              lineHeight: "1.5", 
+              color: "transparent",
+            }}
+            ref={preRef}
+          >
+            {applySyntaxHighlighting(code)}
+          </pre>
+
+          <textarea
+            className="relative w-full border-b-0 h-full min-h-96 p-4 font-mono text-lg sm:text-xl border border-gray-700 rounded bg-transparent text-transparent caret-gray-100 outline-none resize-none"
+            value={code}
+            ref={textareaRef}
+            onChange={(e) => setCode(e.target.value)}
+            onScroll={syncScroll}
+            placeholder="Enter your PowLang code here..."
+            style={{ lineHeight: "1.5" }}
+          />
+
+          <button
+            onClick={toggleFullScreen}
+            className="absolute top-4 right-4 bg-gray-700 text-white p-2 rounded"
+          >
+            {isFullScreen ? "Exit Full Screen" : "Full Screen"}
+          </button>
+        </div>
+
         <div className="flex flex-col sm:flex-row gap-4 mb-4">
           <button
             onClick={handleCompile}
@@ -188,30 +247,18 @@ ala newCats =e 0 -> {
             onClick={handleTestFunCode}
             className="py-2 px-4 bg-blue-500 text-gray-900 rounded"
           >
-            Tester un code rigolo
+            Enter an experiment code
           </button>
         </div>
-        <label className="flex items-center mb-4">
-          <input
-            type="checkbox"
-            checked={enableLogs}
-            onChange={(e) => setEnableLogs(e.target.checked)}
-            className="mr-2"
-          />
-          <span>Afficher les logs supplémentaires</span><span className="font-bold ml-1">(AVANCÉ)</span>
-        </label>
         <h2 className="text-2xl text-blue-400 mb-2">Compilation time</h2>
-        <pre className="w-full p-2 bg-gray-800 border border-gray-700 rounded mb-4 overflow-auto">{time}</pre>
+        <pre className="w-full p-2 bg-gray-800 border border-gray-700 rounded mb-4 overflow-auto">
+          {time}
+        </pre>
         <h2 className="text-2xl text-blue-400 mb-2">Output</h2>
         <pre className="w-full p-2 bg-gray-800 border border-gray-700 rounded mb-4 overflow-auto">
-          {isCompiling ? `${spinnerFrames[spinnerFrame]} Compiling... This is taking longer than usual.` : output}
-        </pre>
-        <h2 className="text-2xl text-blue-400 mb-2">Code</h2>
-        <pre
-          className="w-full p-2 bg-gray-800 border border-gray-700 rounded overflow-auto"
-          style={powLangStyle['pre[class*="language-"]']}
-        >
-          {applySyntaxHighlighting(code)}
+          {isCompiling
+            ? `${spinnerFrames[spinnerFrame]} Compiling... This is taking longer than usual.`
+            : output}
         </pre>
         <h2 className="text-2xl text-blue-400 mb-2">Keyword Dictionary</h2>
         <ul className="flex flex-wrap list-none p-0 mt-4 w-full">
@@ -222,7 +269,8 @@ ala newCats =e 0 -> {
                 onClick={() => handleKeywordClick(value, key)}
                 className="w-full p-2 mb-4 cursor-pointer transition-colors bg-gray-800 border border-gray-700 rounded hover:text-green-400"
               >
-                <strong className="text-green-400">{keyword}:</strong> {description}
+                <strong className="text-green-400">{keyword}:</strong>{" "}
+                {description}
                 <pre
                   className="my-4 bg-gray-800 w-full border-none text-[3vw] md:text-lg text-gray-100 p-0 m-0"
                   style={powLangStyle['pre[class*="language-"]']}

@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: true,
-    experimental: {
       outputFileTracingIncludes: {
         '/api/compiler': [
           './compiler/compiler.js',
@@ -9,7 +8,6 @@ const nextConfig = {
           './compiler/parser.js',
           './compiler/generator.js',
         ],
-      },
     },
   };
   

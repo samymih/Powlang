@@ -49,6 +49,9 @@ const powLangStyle: any = {
   eqi: {
     color: '#56b6c2', // Couleur pour l'opérateur de inférieur ou égal
   },
+  unrecognized: {
+    color: "#fff"
+  },
 };
 
 export default powLangStyle;
