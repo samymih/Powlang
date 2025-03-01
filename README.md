@@ -1,59 +1,59 @@
 # PowLang Compiler
 
-PowLang est un langage de programmation simple conçu pour illustrer les concepts de base des compilateurs. Ce projet inclut un compilateur écrit en JavaScript et une interface web en Next.js pour écrire, compiler et exécuter du code PowLang.
+PowLang is a simple programming language designed to illustrate basic compiler concepts. This project includes a JavaScript-based compiler and a Next.js web interface to write, compile, and run PowLang code.
 
-## Fonctionnalités
+## Features
 
-- Déclaration de variables de type nombre et chaîne de caractères
-- Affichage des expressions et des résultats
-- Opérateurs de comparaison et arithmétiques
-- Boucles `when`
-- Prise en charge des commentaires
-- Conditions avec opérateurs tertiaires et if else
+- Declare variables of type number and string
+- Display expressions and results
+- Comparison and arithmetic operators
+- `when` loops
+- Support for comments
+- Conditional statements with ternary operators and if-else
 
 ## Installation
 
-1. Clonez le dépôt:
+1. Clone the repository:
     ```sh
-    git clone https://github.com/Sopow/powlang.git
+    git clone https://github.com/samymih/powlang.git
     cd powlang
     ```
 
-2. Installez les dépendances pour le compilateur:
+2. Install dependencies for the compiler:
     ```sh
     npm install
     ```
 
-3. Accédez au dossier `web` et installez les dépendances pour l'interface web:
+3. Go to the `web` folder and install dependencies for the web interface:
     ```sh
     cd web
     npm install
     ```
 
-4. Lancez l'application web:
+4. Start the web application:
     ```sh
     npm run dev
     ```
 
-### Exécution du Compilateur
+### Running the Compiler
 
-Pour exécuter le compilateur avec un fichier PowLang, utilisez la commande suivante:
+To run the compiler with a PowLang file, use the following command:
 ```sh
 node compiler/compiler.js example.pow
 ```
 
-### Interface Web
+### Web Interface
 
-1. Ouvrez votre navigateur et allez à l'adresse:
+1. Open your browser and navigate to:
     ```
     http://localhost:3000
     ```
 
-2. Entrez votre code PowLang dans l'éditeur de texte et cliquez sur "Compile" pour voir le résultat et la sortie.
+2. Enter your PowLang code in the text editor and click "Compile" to see the result and output.
 
-### Exemple de Code PowLang
+### PowLang Code Example
 
-Voici un exemple de fichier `example.pow` qui illustre les fonctionnalités du langage:
+Here is an example `example.pow` file demonstrating the language features:
 
 ```plaintext
 # Define a number x
@@ -109,8 +109,8 @@ when x > 0 :: x-- => {
 
 ## Contribution
 
-Les contributions sont les bienvenues ! Pour contribuer, veuillez créer une branche, ajouter vos modifications et soumettre une pull request.
+Contributions are welcome! To contribute, please create a branch, add your changes, and submit a pull request.
 
 ## License
 
-Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
